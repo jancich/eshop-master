@@ -11,6 +11,8 @@ type CartContextType = {
     handleCartQtyIncrease: (product: CartProductType) => void;
     handleCartQtyDecrease: (product: CartProductType) => void;
     handleClearCart: (product: CartProductType) => void;
+    paymentIntent: String | null;
+    handleSetPaymentIntent: (val: string | null) => void;
 }
 
 export const CartContext =
@@ -25,16 +27,19 @@ interface Props{
     const [cartTotalQty, setCartTotalQty] = useState(0);
     const [cartTotalAmount, setCartTotalAmount] = useState(0)
     const[cartProducts, setCartProducts] = useState<CartProductType [] | null>(null);
+    const [paymentIntent, setPaymentIntent] = useState<string | null>(null)
 
 
-    console.log('qty', cartTotalQty)
-    console.log('amount', cartTotalAmount)
+
 
     useEffect(()=> {
-        const cartItems: any =localStorage.getItem('eShopCartItems')
-        const cProducts: CartProductType[] | null = JSON.parse(cartItems)
+        const cartItems: any =localStorage.getItem('eShopCartItems');
+        const cProducts: CartProductType[] | null = JSON.parse(cartItems);
+        const eShopPaymentIntent: any = localStorage.getItem('eShopPaymentIntent');
+        const paymentIntent: string | null = JSON.parse(eShopPaymentIntent);
 
-        setCartProducts(cProducts)
+        setCartProducts(cProducts);
+        setPaymentIntent(paymentIntent);
     }, []);
 
 
@@ -141,7 +146,12 @@ interface Props{
         setCartProducts(null)
         setCartTotalQty(0)
         localStorage.setItem('eShopCartItems', JSON.stringify(null));
-    },[cartProducts])
+    },[cartProducts]);
+
+    const handleSetPaymentIntent = useCallback((val: string | null)=> {
+        setPaymentIntent(val)
+        localStorage.setItem('eShopPaymentIntent', JSON.stringify(val))
+    },[paymentIntent])
 
     const value = {
         cartTotalQty,
@@ -152,6 +162,8 @@ interface Props{
         handleCartQtyIncrease,
         handleCartQtyDecrease,
         handleClearCart,
+        paymentIntent,
+        handleSetPaymentIntent,
     }
     return<CartContext.Provider value={value} {...props}/>
  };

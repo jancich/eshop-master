@@ -23,7 +23,7 @@ export type CartProductType = {
     selectedImg: SelectedImgType,
     quantity: number,
     price: number
-}
+};
 
 export type SelectedImgType = {
     color: string,
